@@ -3,6 +3,20 @@
 #include <glut.h>
 #include <GLFW/glfw3.h>
 
+#define WIN_X_SIZE 680.0f
+#define WIN_Y_SIZE 480.0f
+
+/*------------------------------------------*/
+
+/*0--------------------------------------680*/
+/*------------------------------------------*/
+/*------------------------------------------*/
+/*------------------------------------------*/
+/*------------------------------------------*/
+/*480------------------------------------680*/
+
+/*------------------------------------------*/
+
 double cursX, cursY;
 double rectX, rectY;
 bool is_dragging;
@@ -20,7 +34,7 @@ int main()
         std::cerr << "Error\n";
         exit(-1);
     }
-    window = glfwCreateWindow(680, 480, "My window", nullptr, nullptr);
+    window = glfwCreateWindow(WIN_X_SIZE, WIN_Y_SIZE, "My window", nullptr, nullptr);
     if(window == nullptr) {
         std::cerr << "Window failed" << std::endl;
         glfwTerminate();
@@ -64,8 +78,9 @@ void mouse_button_callback(GLFWwindow* win, int button, int action, int mods) {
             case GLFW_PRESS:
                 /*Step 1: get the cursor coords and save them in mouseX and mouseY*/
                 glfwGetCursorPos(win, &mouseX, &mouseY);
+                std::cout << "X: " << mouseX << "; Y: " << mouseY << std::endl;
                 /*Step 2: check if they are inside the rectangle -> maybe use defines*/
-                if((mouseX >= (rectX - 0.5f) && mouseX <= (rectX + 0.5f)) && (mouseY >= (rectY -0.5f) && mouseY <= (rectY + 0.5f))) {
+                if((mouseX >= (rectX - 0.5f) && mouseX <= (rectX + 0.5f)) && (mouseY >= (rectY - 0.5f) && mouseY <= (rectY + 0.5f))) {
                     /*get the position of the cursor at the time it has been pressed*/
                     cursX = mouseX;
                     cursY = mouseY;
