@@ -18,13 +18,13 @@
 /*------------------------------------------*/
 
 double cursX, cursY;
-double rectX, rectY;
+float rectX, rectY;
 bool is_dragging;
 
 void draw_rect(GLFWwindow *win);
 void mouse_button_callback(GLFWwindow* win, int button, int action, int mods);
 void mouse_move_callback(GLFWwindow* win, double xpos, double ypos);
-double normalize_coords(double to_conv, float screen_size);
+float normalize_coords(double to_conv, float screen_size);
 
 int main()
 {
@@ -59,12 +59,13 @@ void draw_rect(GLFWwindow *win) {
     glClear(GL_COLOR_BUFFER_BIT);
     /*glColor3f -> set the color of the buffer*/
     glColor3f(0.5, 0.7, 0.3);
+    glLineWidth(1.5);
     /*glBegin -> specifies the geometry type of the incoming vertices (deprecated: learn VBO and VAO)*/
     glBegin(GL_LINE_LOOP);
-    glVertex3d(rectX - 0.5f, rectY - 0.5, 0); // Bottom-left vertex
-    glVertex3d(rectX + 0.5f, rectY - 0.5, 0);  // Bottom-right vertex
-    glVertex3d(rectX + 0.5f, rectY + 0.5, 0);   // Top-right vertex
-    glVertex3d(rectX - 0.5f, rectY + 0.5, 0);  // Top-left vertex
+    glVertex2f(rectX - 0.5f, rectY - 0.5); // Bottom-left vertex
+    glVertex2f(rectX + 0.5f, rectY - 0.5);  // Bottom-right vertex
+    glVertex2f(rectX + 0.5f, rectY + 0.5);   // Top-right vertex
+    glVertex2f(rectX - 0.5f, rectY + 0.5);  // Top-left vertex
     glEnd();
     /*glfwSwapBuffers -> places the window behing the rectangle, otherwise we don't see any rectangle*/
     glfwSwapBuffers(win);
@@ -111,13 +112,13 @@ void mouse_move_callback(GLFWwindow* win, double xpos, double ypos) {
     }
 }
 
-double normalize_coords(double to_conv, float screen_size) {
-    double dval = 0;
+float normalize_coords(double to_conv, float screen_size) {
+    float fval = 0;
     if(screen_size == WIN_X_SIZE) {
-        dval = ((2 * to_conv) / screen_size) - 1;
+        fval = ((2 * to_conv) / screen_size) - 1;
     } else if(screen_size == WIN_Y_SIZE) {
-        dval = 1 - ((2 * to_conv) / screen_size);
+        fval = 1 - ((2 * to_conv) / screen_size);
     }
-    return dval;
+    return fval;
 }
 
