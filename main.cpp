@@ -3,8 +3,8 @@
 #include <glut.h>
 #include <GLFW/glfw3.h>
 
-#define WIN_X_SIZE 2160.0f
-#define WIN_Y_SIZE 1440.0f
+#define WIN_X_SIZE 680.0f
+#define WIN_Y_SIZE 480.0f
 
 /*------------------------------------------*/
 
@@ -24,8 +24,7 @@ bool is_dragging;
 void draw_rect(GLFWwindow *win);
 void mouse_button_callback(GLFWwindow* win, int button, int action, int mods);
 void mouse_move_callback(GLFWwindow* win, double xpos, double ypos);
-float normalize_Xcoords(double to_conv, float screen_size);
-float normalize_Ycoords(double to_conv, float screen_size);
+double normalize_coords(double to_conv, float screen_size);
 
 int main()
 {
@@ -62,10 +61,10 @@ void draw_rect(GLFWwindow *win) {
     glColor3f(0.5, 0.7, 0.3);
     /*glBegin -> specifies the geometry type of the incoming vertices (deprecated: learn VBO and VAO)*/
     glBegin(GL_LINE_LOOP);
-    glVertex2f(rectX - 0.5f, rectY - 0.5f); // Bottom-left vertex
-    glVertex2f(rectX + 0.5f, rectY - 0.5f);  // Bottom-right vertex
-    glVertex2f(rectX + 0.5f, rectY + 0.5f);   // Top-right vertex
-    glVertex2f(rectX - 0.5f, rectY + 0.5f);  // Top-left vertex
+    glVertex3d(rectX - 0.5f, rectY - 0.5, 0); // Bottom-left vertex
+    glVertex3d(rectX + 0.5f, rectY - 0.5, 0);  // Bottom-right vertex
+    glVertex3d(rectX + 0.5f, rectY + 0.5, 0);   // Top-right vertex
+    glVertex3d(rectX - 0.5f, rectY + 0.5, 0);  // Top-left vertex
     glEnd();
     /*glfwSwapBuffers -> places the window behing the rectangle, otherwise we don't see any rectangle*/
     glfwSwapBuffers(win);
@@ -82,8 +81,8 @@ void mouse_button_callback(GLFWwindow* win, int button, int action, int mods) {
                 /*Step 1: get the current position of the cursor*/
                 glfwGetCursorPos(win, &mouseX, &mouseY);
                 std::cout << "X: " << mouseX << "; Y: " << mouseY << std::endl;
-                x_norm = normalize_Xcoords(mouseX, WIN_X_SIZE);
-                y_norm = normalize_Ycoords(mouseY, WIN_Y_SIZE);
+                x_norm = normalize_coords(mouseX, WIN_X_SIZE);
+                y_norm = normalize_coords(mouseY, WIN_Y_SIZE);
                 /*Step 2: check if they are inside the rectangle -> maybe use defines*/
                 if((x_norm >= (rectX - 0.5f) && x_norm <= (rectX + 0.5f)) && (y_norm >= (rectY - 0.5f) && y_norm <= (rectY + 0.5f))) {
                     /*get the position of the cursor at the time it has been pressed*/
@@ -102,23 +101,23 @@ void mouse_button_callback(GLFWwindow* win, int button, int action, int mods) {
         }
     }
 }
+
 void mouse_move_callback(GLFWwindow* win, double xpos, double ypos) {
     if(is_dragging == true) {
-        rectX += (xpos - cursY) / WIN_X_SIZE;
+        rectX += (xpos - cursX) / WIN_X_SIZE;
         rectY -= (ypos - cursY) / WIN_Y_SIZE;
         cursX = xpos;
         cursY = ypos;
     }
 }
 
-float normalize_Xcoords(double x_to_conv, float screen_size) {
-    float fval = 0;
-    fval = ((2 * x_to_conv) / screen_size) - 1;
-    return fval;
+double normalize_coords(double to_conv, float screen_size) {
+    double dval = 0;
+    if(screen_size == WIN_X_SIZE) {
+        dval = ((2 * to_conv) / screen_size) - 1;
+    } else if(screen_size == WIN_Y_SIZE) {
+        dval = 1 - ((2 * to_conv) / screen_size);
+    }
+    return dval;
 }
 
-float normalize_Ycoords(double to_conv, float screen_size) {
-    float fval = 0;
-    fval = 1 - ((2 * to_conv) / screen_size);
-    return fval;
-}
